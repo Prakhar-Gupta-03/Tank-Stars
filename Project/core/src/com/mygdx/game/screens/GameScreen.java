@@ -201,6 +201,12 @@ public class GameScreen extends com.tankstars.game.screens.DefaultScreen {
                 public void clicked(InputEvent event, float x, float y) {
                     System.out.println("Fire");
                     isPlayer1Turn = !isPlayer1Turn;
+                    if (isPlayer1Turn){
+                        player1Tank.setFuelLeft(player1Tank.MAX_FUEL);
+                    }
+                    else{
+                        player2Tank.setFuelLeft(player2Tank.MAX_FUEL);
+                    }
                 }
             });
         }
@@ -956,15 +962,19 @@ public class GameScreen extends com.tankstars.game.screens.DefaultScreen {
                     case Input.Keys.A:
                         if (isPlayer1Turn) {
                             player1Tank.moveRight();
+                            player1Tank.setFuelLeft(player1Tank.getFuelLeft() - 1);
                         } else {
                             player2Tank.moveRight();
+                            player2Tank.setFuelLeft(player2Tank.getFuelLeft() - 1);
                         }
                         break;
                     case Input.Keys.D:
                         if (isPlayer1Turn) {
                             player1Tank.moveLeft();
+                            player1Tank.setFuelLeft(player1Tank.getFuelLeft() - 1);
                         } else {
                             player2Tank.moveLeft();
+                            player2Tank.setFuelLeft(player2Tank.getFuelLeft() - 1);
                         }
                 }
                 return true;
@@ -1118,16 +1128,9 @@ public class GameScreen extends com.tankstars.game.screens.DefaultScreen {
         tankFuelBar = new Image(new Texture(Gdx.files.internal("Game Screen/tankFuelBar.png")));
         tankFuelBarBackground = new Image(new Texture(Gdx.files.internal("Game Screen/tankFuelBarBackground.png")));
         tankFuelBarBackground.setPosition(50,180);
-        tankFuelBarBackground.setSize(200, 40);
+        tankFuelBarBackground.setSize(200, 50);
+        tankFuelBar.setPosition(50,185);
         stage.addActor(tankFuelBarBackground);
-//        Image fuelbg = new Image(new Texture(Gdx.files.internal("Game Screen/1.png")));
-//        Image fuelbar = new Image(new Texture(Gdx.files.internal("Game Screen/2.png")));
-//        fuelbg.setPosition(50,180);
-//        fuelbg.setSize(200, 40);
-//        fuelbar.setPosition(50,180);
-//        fuelbar.setSize(100, 40);
-//        stage.addActor(fuelbg);
-//        stage.addActor(fuelbar);
     }
 
     public void trajectory1(){
@@ -1186,7 +1189,14 @@ public class GameScreen extends com.tankstars.game.screens.DefaultScreen {
         }
 
     }
-
+    public void fuelChange(){
+        if (isPlayer1Turn && player1Tank.getFuelLeft() > 0){
+            tankFuelBar.setSize((player1Tank.getFuelLeft()/100f)*200,40);
+        }
+        else if (!isPlayer1Turn && player2Tank.getFuelLeft() > 0){
+            tankFuelBar.setSize((player2Tank.getFuelLeft()/100f)*200,40);
+        }
+    }
     public void update(){
         healthBarP1.setValue(player1Tank.getHealth());
         healthBarP2.setValue(player2Tank.getHealth());
@@ -1208,6 +1218,8 @@ public class GameScreen extends com.tankstars.game.screens.DefaultScreen {
 //        arrow2.setPosition(tankBody.getPosition().x,tankBody.getPosition().y);
 //        stage.addActor(arrow2);
         //        stage.addActor(arrow1);
+        fuelChange();
+        stage.addActor(tankFuelBar);
         stage.draw();
         inputMultiplexer.addProcessor(stage);
         inputMultiplexer.addProcessor(inputController);

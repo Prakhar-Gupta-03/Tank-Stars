@@ -17,6 +17,8 @@ public class Tank extends com.tankstars.game.TankStars {
     public int fuelLeft = 100;
     private boolean isPlayer1;
     private boolean isPlayer2;
+    final public int MAX_FUEL = 100;
+
     public Tank(){
         tankAtlas = new TextureAtlas("Tanks/items.pack");
         tankSkin = new Skin(tankAtlas);
