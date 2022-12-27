@@ -5,7 +5,6 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.*;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
@@ -21,7 +20,6 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.Scanner;
-import java.util.Vector;
 
 import static com.badlogic.gdx.math.MathUtils.cos;
 import static com.badlogic.gdx.math.MathUtils.sin;
@@ -72,6 +70,25 @@ public class GameScreen extends com.tankstars.game.screens.DefaultScreen {
     private Skin defaultskin;
     private String[] savedGameName;
     private Image bullet = new Image(new Texture(Gdx.files.internal("Game Screen/bullet.png")));
+//    public static class ProjectileEquation{
+//        public float gravity;
+//        public Vector2 startVelocity = new Vector2();
+//        public Vector2 startPoint = new Vector2();
+//        public float getX(float t) {
+//            return startVelocity.x * t + startPoint.x;
+//        }
+//
+//        public float getY(float t) {
+//            return 0.5f * gravity * t * t + startVelocity.y * t + startPoint.y;
+//        }
+//
+//        public float getTForGivenX(float x) {
+//            // x = startVelocity.x * t + startPoint.x
+//            // x - startPoint.x = startVelocity.x * t
+//            // t = (x - startPoint.x) / (startVelocity.x);
+//            return (x - startPoint.x) / (startVelocity.x);
+//        }
+//    }
     public void buttonInputDefinition(){
         // exit buttons
         {
@@ -1173,8 +1190,6 @@ public class GameScreen extends com.tankstars.game.screens.DefaultScreen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         stage.setDebugAll(true);
         stage.act(delta);
-
-        stage.addActor(tankFuelBarBackground);
         inputController = new InputController() {
             public Vector2 start = new Vector2();
             public Vector2 end = new Vector2();
@@ -1380,3 +1395,4 @@ public class GameScreen extends com.tankstars.game.screens.DefaultScreen {
         stage.dispose();
     }
 }
+
