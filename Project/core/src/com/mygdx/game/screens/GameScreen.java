@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.*;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
@@ -70,6 +71,7 @@ public class GameScreen extends com.tankstars.game.screens.DefaultScreen {
     private TextField saveGameTextField;
     private Skin defaultskin;
     private String[] savedGameName;
+    private Image bullet = new Image(new Texture(Gdx.files.internal("Game Screen/bullet.png")));
     public void buttonInputDefinition(){
         // exit buttons
         {
@@ -1022,6 +1024,7 @@ public class GameScreen extends com.tankstars.game.screens.DefaultScreen {
         stage.addActor(selectWeapon);
         {
         stage.addActor(pauseButton);
+        stage.addActor(bullet);
 //        //HealthBar1
 //        {
 //            Skin healthBarSkin = new Skin(Gdx.files.internal("skins/comic/skin/comic-ui.json"));
@@ -1173,6 +1176,8 @@ public class GameScreen extends com.tankstars.game.screens.DefaultScreen {
 
         stage.addActor(tankFuelBarBackground);
         inputController = new InputController() {
+            public Vector2 start = new Vector2();
+            public Vector2 end = new Vector2();
             @Override
             public boolean keyDown(int keycode) {
                 switch (keycode) {
@@ -1216,6 +1221,14 @@ public class GameScreen extends com.tankstars.game.screens.DefaultScreen {
                         break;
                 }
                 return false;
+            }
+            public boolean touchDragged(int screenX, int screenY, int pointer){
+                start.set(end);
+                end.set(screenX,screenY);
+                bullet.setPosition(end.x, 675-end.y);
+                System.out.println("start: " + start);
+                System.out.println("end: " + end);
+                return true;
             }
         };
         if (Gdx.input.isKeyPressed(Input.Keys.A)){
