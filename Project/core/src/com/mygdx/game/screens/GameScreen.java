@@ -1110,6 +1110,7 @@ public class GameScreen extends com.tankstars.game.screens.DefaultScreen {
         tankFuelBarBackground.setPosition(50,180);
         tankFuelBarBackground.setSize(200, 50);
         tankFuelBar.setPosition(50,185);
+        stage.addActor(tankFuelBarBackground);
 
     }
 
@@ -1175,6 +1176,18 @@ public class GameScreen extends com.tankstars.game.screens.DefaultScreen {
         }
         else if (!isPlayer1Turn && player2Tank.getFuelLeft() > 0){
             tankFuelBar.setSize((player2Tank.getFuelLeft()*1f/player1Tank.MAX_FUEL)*200,40);
+        }
+    }
+    public void stopTank(){
+        if (isPlayer1Turn){
+            player1Tank.stop();
+            tankBody.setLinearVelocity(0,0);
+            tankBody.setAngularVelocity(0);
+        }
+        else{
+            player2Tank.stop();
+            tankBody2.setLinearVelocity(0,0);
+            tankBody2.setAngularVelocity(0);
         }
     }
     public void update(){
@@ -1250,18 +1263,30 @@ public class GameScreen extends com.tankstars.game.screens.DefaultScreen {
             if (isPlayer1Turn && player1Tank.getFuelLeft() > 0) {
 //                player1Tank.moveRight();
                 player1Tank.setFuelLeft(player1Tank.getFuelLeft() - 1);
+                if (player1Tank.getFuelLeft() == 0){
+                    stopTank();
+                }
             } else if (!isPlayer1Turn && player2Tank.getFuelLeft() > 0) {
 //                player2Tank.moveRight();
                 player2Tank.setFuelLeft(player2Tank.getFuelLeft() - 1);
+                if (player2Tank.getFuelLeft() == 0){
+                    stopTank();
+                }
             }
         }
         if (Gdx.input.isKeyPressed(Input.Keys.D)) {
             if (isPlayer1Turn && player1Tank.getFuelLeft() > 0) {
 //                player1Tank.moveLeft();
                 player1Tank.setFuelLeft(player1Tank.getFuelLeft() - 1);
+                if (player1Tank.getFuelLeft() == 0){
+                    stopTank();
+                }
             } else if (!isPlayer1Turn && player2Tank.getFuelLeft() > 0) {
 //                player2Tank.moveLeft();
                 player2Tank.setFuelLeft(player2Tank.getFuelLeft() - 1);
+                if (player2Tank.getFuelLeft() == 0){
+                    stopTank();
+                }
             }
         }
         tankSpeed1 = new Vector2(player1Tank.getSpeed(), 0);
