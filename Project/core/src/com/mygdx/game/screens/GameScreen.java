@@ -301,7 +301,7 @@ public class GameScreen extends com.tankstars.game.screens.DefaultScreen {
             FixtureDef groundFixtureDef = new FixtureDef();
             groundFixtureDef.shape = groundShape;
             groundFixtureDef.density = 100000f;
-            groundFixtureDef.friction = 0f;
+            groundFixtureDef.friction = 0.1f;
             groundFixtureDef.restitution = 0f;
             Fixture groundFixture = groundBody.createFixture(groundFixtureDef);
         }
@@ -673,7 +673,7 @@ public class GameScreen extends com.tankstars.game.screens.DefaultScreen {
             FixtureDef tankFixtureDef = new FixtureDef();
             tankFixtureDef.shape = tankShape;
             tankFixtureDef.density = 15f;
-            tankFixtureDef.friction = 0.6f;
+            tankFixtureDef.friction = 0.3f;
             tankFixtureDef.restitution = 0.2f;
             Fixture tankFixture = tankBody.createFixture(tankFixtureDef);
             // Tank 2 Definition
@@ -733,7 +733,7 @@ public class GameScreen extends com.tankstars.game.screens.DefaultScreen {
             FixtureDef tankFixtureDef = new FixtureDef();
             tankFixtureDef.shape = tankShape;
             tankFixtureDef.density = 12f;
-            tankFixtureDef.friction = 0.7f;
+            tankFixtureDef.friction = 0.3f;
             tankFixtureDef.restitution = 0.0f;
             Fixture tankFixture = tankBody.createFixture(tankFixtureDef);
             // Tank 2 Definition
@@ -783,7 +783,7 @@ public class GameScreen extends com.tankstars.game.screens.DefaultScreen {
 
 
     }
-    public void pauseMenu(){
+    public void pauseMenu() {
         {
             resumeButton = new TextButton("Resume", textButtonStyle);
             mainMenuButton = new TextButton("MainMenu", textButtonStyle);
@@ -955,46 +955,6 @@ public class GameScreen extends com.tankstars.game.screens.DefaultScreen {
     public void show() {
         stage = new Stage();
         tankSpriteSetUp();
-        inputController = new InputController() {
-            @Override
-            public boolean keyDown(int keycode) {
-                switch (keycode) {
-                    case Input.Keys.A:
-                        if (isPlayer1Turn) {
-                            player1Tank.moveRight();
-                            player1Tank.setFuelLeft(player1Tank.getFuelLeft() - 1);
-                        } else {
-                            player2Tank.moveRight();
-                            player2Tank.setFuelLeft(player2Tank.getFuelLeft() - 1);
-                        }
-                        break;
-                    case Input.Keys.D:
-                        if (isPlayer1Turn) {
-                            player1Tank.moveLeft();
-                            player1Tank.setFuelLeft(player1Tank.getFuelLeft() - 1);
-                        } else {
-                            player2Tank.moveLeft();
-                            player2Tank.setFuelLeft(player2Tank.getFuelLeft() - 1);
-                        }
-                }
-                return true;
-            }
-
-            @Override
-            public boolean keyUp(int keycode) {
-                switch (keycode) {
-                    case Input.Keys.A:
-                    case Input.Keys.D:
-                        if (isPlayer1Turn) {
-                            player1Tank.stop();
-                        } else {
-                            player2Tank.stop();
-                        }
-                        break;
-                }
-                return false;
-            }
-        };
         inputMultiplexer = new InputMultiplexer();
         atlas = new TextureAtlas("mainMenu/pack/button.atlas");
         skin = new Skin(atlas);
@@ -1061,7 +1021,7 @@ public class GameScreen extends com.tankstars.game.screens.DefaultScreen {
         buttonInputDefinition();
         stage.addActor(selectWeapon);
         {
-//        stage.addActor(pauseButton);
+        stage.addActor(pauseButton);
 //        //HealthBar1
 //        {
 //            Skin healthBarSkin = new Skin(Gdx.files.internal("skins/comic/skin/comic-ui.json"));
@@ -1130,7 +1090,7 @@ public class GameScreen extends com.tankstars.game.screens.DefaultScreen {
         tankFuelBarBackground.setPosition(50,180);
         tankFuelBarBackground.setSize(200, 50);
         tankFuelBar.setPosition(50,185);
-        stage.addActor(tankFuelBarBackground);
+
     }
 
     public void trajectory1(){
@@ -1191,10 +1151,10 @@ public class GameScreen extends com.tankstars.game.screens.DefaultScreen {
     }
     public void fuelChange(){
         if (isPlayer1Turn && player1Tank.getFuelLeft() > 0){
-            tankFuelBar.setSize((player1Tank.getFuelLeft()/100f)*200,40);
+            tankFuelBar.setSize((player1Tank.getFuelLeft()*1f/player1Tank.MAX_FUEL)*200,40);
         }
         else if (!isPlayer1Turn && player2Tank.getFuelLeft() > 0){
-            tankFuelBar.setSize((player2Tank.getFuelLeft()/100f)*200,40);
+            tankFuelBar.setSize((player2Tank.getFuelLeft()*1f/player1Tank.MAX_FUEL)*200,40);
         }
     }
     public void update(){
@@ -1210,6 +1170,72 @@ public class GameScreen extends com.tankstars.game.screens.DefaultScreen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         stage.setDebugAll(true);
         stage.act(delta);
+
+        stage.addActor(tankFuelBarBackground);
+        inputController = new InputController() {
+            @Override
+            public boolean keyDown(int keycode) {
+                switch (keycode) {
+                    case Input.Keys.A:
+                        if (isPlayer1Turn && player1Tank.getFuelLeft() > 0) {
+                            player1Tank.moveRight();
+                            player1Tank.setFuelLeft(player1Tank.getFuelLeft() - 1);
+                        } else if (!isPlayer1Turn && player2Tank.getFuelLeft() > 0) {
+                            player2Tank.moveRight();
+                            player2Tank.setFuelLeft(player2Tank.getFuelLeft() - 1);
+                        }
+                        break;
+                    case Input.Keys.D:
+                        if (isPlayer1Turn && player1Tank.getFuelLeft() > 0) {
+                            player1Tank.moveLeft();
+                            player1Tank.setFuelLeft(player1Tank.getFuelLeft() - 1);
+                        } else if (!isPlayer1Turn && player2Tank.getFuelLeft() > 0) {
+                            player2Tank.moveLeft();
+                            player2Tank.setFuelLeft(player2Tank.getFuelLeft() - 1);
+                        }
+                }
+                return true;
+            }
+
+            @Override
+            public boolean keyUp(int keycode) {
+                switch (keycode) {
+                    case Input.Keys.A:
+                    case Input.Keys.D:
+                        if (isPlayer1Turn && player1Tank.getFuelLeft() >= 0) {
+                            player1Tank.stop();
+                            // set body velocity to 0
+                            tankBody.setLinearVelocity(0, 0);
+                            tankBody.setAngularVelocity(0);
+                        } else if (!isPlayer1Turn && player2Tank.getFuelLeft() >= 0) {
+                            player2Tank.stop();
+                            // set body velocity to 0
+                            tankBody2.setLinearVelocity(0, 0);
+                            tankBody2.setAngularVelocity(0);
+                        }
+                        break;
+                }
+                return false;
+            }
+        };
+        if (Gdx.input.isKeyPressed(Input.Keys.A)){
+            if (isPlayer1Turn && player1Tank.getFuelLeft() > 0) {
+//                player1Tank.moveRight();
+                player1Tank.setFuelLeft(player1Tank.getFuelLeft() - 1);
+            } else if (!isPlayer1Turn && player2Tank.getFuelLeft() > 0) {
+//                player2Tank.moveRight();
+                player2Tank.setFuelLeft(player2Tank.getFuelLeft() - 1);
+            }
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.D)) {
+            if (isPlayer1Turn && player1Tank.getFuelLeft() > 0) {
+//                player1Tank.moveLeft();
+                player1Tank.setFuelLeft(player1Tank.getFuelLeft() - 1);
+            } else if (!isPlayer1Turn && player2Tank.getFuelLeft() > 0) {
+//                player2Tank.moveLeft();
+                player2Tank.setFuelLeft(player2Tank.getFuelLeft() - 1);
+            }
+        }
         tankSpeed1 = new Vector2(player1Tank.getSpeed(), 0);
         tankSpeed2 = new Vector2(player2Tank.getSpeed(), 0);
         tankBody.applyLinearImpulse(tankSpeed1, tankBody.getWorldCenter(), true);

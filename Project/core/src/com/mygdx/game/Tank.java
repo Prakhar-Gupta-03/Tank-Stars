@@ -12,12 +12,13 @@ public class Tank extends com.tankstars.game.TankStars {
     public com.tankstars.game.Weapons AbramsSplitterChain, AbramsBigOne, AbramsAirStrike, AbramsShotgun, AbramsVolley, AbramsMIRV;
     public com.tankstars.game.Weapons FrostBlast, FrostBite, FrostBlizzard, FrostAssaultDrones, FrostHighPressure, FrostIceSplitter;
     public com.tankstars.game.Weapons BuratinoHoming, BuratinoMIRV,BuratinoShredder,BuratinoAreaStrike,BuratinoRapidFire, BuratinoHounds;
+    final public int MAX_FUEL = 500;
     public int health = 100;
     public int speed = 0;
-    public int fuelLeft = 100;
+    public int fuelLeft = MAX_FUEL;
     private boolean isPlayer1;
     private boolean isPlayer2;
-    final public int MAX_FUEL = 100;
+
 
     public Tank(){
         tankAtlas = new TextureAtlas("Tanks/items.pack");

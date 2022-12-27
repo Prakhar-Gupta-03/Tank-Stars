@@ -1,0 +1,13 @@
+Abrams
+Abrams
+100
+100
+0
+155
+-347.72623
+-34.983616
+-40.387356
+-43.983536
+SplitterChain
+SplitterChain
+false
